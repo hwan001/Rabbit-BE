@@ -1,0 +1,60 @@
+# 기본설정
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: rabbit
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create 
+    properties:
+      hibernate:
+        format_sql: true
+    database: mysql
+    show-sql: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+        hibernate: DEBUG
+
+# prod 프로필
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL_PROD}
+    username: ${DB_USERNAME_PROD}
+    password: ${DB_PASSWORD_PROD}
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate 
+    properties:
+      hibernate:
+        format_sql: true
+    database: mysql
+    show-sql: false
+
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: INFO
+        security: WARN
+        hibernate: WARN
