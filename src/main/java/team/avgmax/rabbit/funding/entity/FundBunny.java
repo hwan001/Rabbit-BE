@@ -1,0 +1,40 @@
+package team.avgmax.rabbit.funding.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import team.avgmax.rabbit.global.entity.BaseTime;
+import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.entity.PersonalUser;
+import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
+import team.avgmax.rabbit.funding.entity.enums.FundBunnyStatus;
+
+import java.math.BigDecimal;
+
+@Entity
+@Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class FundBunny extends BaseTime {
+
+    @Id
+    @Column(name = "fund_bunny_id", length = 26, updatable = false, nullable = false)
+    @Builder.Default
+    private String id = UlidGenerator.generateMonotonic();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private PersonalUser user;
+
+    @Column(unique = true, nullable = false)
+    private String bunnyName;
+
+    @Enumerated(EnumType.STRING)
+    private BunnyType type;
+
+    @Enumerated(EnumType.STRING)
+    private FundBunnyStatus status;
+
+    private BigDecimal backerCount;
+
+}

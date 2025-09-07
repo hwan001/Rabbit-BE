@@ -36,6 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+### Properties ###
 application.properties
 .properties
 .env
+src/main/generated/
