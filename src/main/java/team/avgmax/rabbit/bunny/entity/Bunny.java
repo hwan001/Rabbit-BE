@@ -2,6 +2,7 @@ package team.avgmax.rabbit.bunny.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
@@ -14,7 +15,7 @@ import team.avgmax.rabbit.user.entity.enums.Position;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bunny extends BaseTime {
