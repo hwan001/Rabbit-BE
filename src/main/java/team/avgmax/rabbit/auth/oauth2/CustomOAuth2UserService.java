@@ -51,8 +51,9 @@ public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2Authentic
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-        email = (String) kakaoAccount.get("email");
-        name = (String) profile.get("nickname");
+        email = registrationId + "_" + attributes.get("id") + "@avgmax.team";
+        name = profile.get("nickname").toString();
+
         providerId = String.valueOf(attributes.get("id"));
 
     } else {
