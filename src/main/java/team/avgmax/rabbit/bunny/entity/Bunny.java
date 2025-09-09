@@ -40,9 +40,13 @@ public class Bunny extends BaseTime {
     @Enumerated(EnumType.STRING)
     private Position position;
 
+    private BigDecimal reliability;
+
     private BigDecimal currentPrice; 
 
     private BigDecimal closingPrice;
+
+    private BigDecimal marketCap;
 
     // 5가지 성장 지표 추후 추가
     
