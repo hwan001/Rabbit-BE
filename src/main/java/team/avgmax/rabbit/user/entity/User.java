@@ -21,6 +21,7 @@ public abstract class User extends BaseTime {
     private String password;
     private String name;
     private String image;
+
     @Enumerated(EnumType.STRING)
     private Role role;
     private String phone;

@@ -3,6 +3,7 @@ package team.avgmax.rabbit.funding.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import team.avgmax.rabbit.funding.dto.request.CreateFundBunnyRequest;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 import team.avgmax.rabbit.user.entity.PersonalUser;
@@ -33,9 +34,18 @@ public class FundBunny extends BaseTime {
     @Enumerated(EnumType.STRING)
     private BunnyType type;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private FundBunnyStatus status;
+    private FundBunnyStatus status = FundBunnyStatus.ONGOING;
 
-    private BigDecimal backerCount;
+    @Builder.Default
+    private BigDecimal backerCount = BigDecimal.ZERO;
 
+    public static FundBunny create(CreateFundBunnyRequest request, PersonalUser user) {
+        return FundBunny.builder()
+                .user(user)
+                .bunnyName(request.bunnyName())
+                .type(request.bunnyType())
+                .build();
+    }
 }
