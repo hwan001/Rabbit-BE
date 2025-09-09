@@ -29,7 +29,7 @@ public class JwtConfig {
     public JwtDecoder jwtDecoder() {
         SecretKeySpec key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(key)
-                .macAlgorithm(MacAlgorithm.HS256) // ✅ 명시적으로 추가
+                .macAlgorithm(MacAlgorithm.HS256)
                 .build();
     }
 }

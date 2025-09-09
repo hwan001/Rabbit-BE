@@ -3,6 +3,8 @@ package team.avgmax.rabbit.auth.oauth2;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -25,12 +27,25 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtEncoder jwtEncoder;
 
+    @Value("${app.security.cookie.secure}")
+    private boolean cookieSecure;
+
+    @Value("${app.security.cookie.same-site}")
+    private String cookieSameSite;
+
+    @Value("${app.security.redirect-uri}")
+    private String redirectUri;
+    
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         Instant now = Instant.now();
 
+        CustomOAuth2User customUser = (CustomOAuth2User) authentication.getPrincipal();
+        String personalUserId = customUser.getPersoanlUser().getId();
+        
         // Access Token (15분)
         long accessExpiry = 60L * 15;
 
@@ -38,7 +53,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .issuer("rabbit-app")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(accessExpiry))
-                .subject(authentication.getName())
+                .subject(personalUserId)
                 .claim("roles", authentication.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.toList()))
@@ -55,25 +70,24 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .issuer("rabbit-app")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(refreshExpiry))
-                .subject(authentication.getName())
+                .subject(personalUserId)
                 .claim("type", "refresh")
                 .build();
 
         String refreshToken = jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, refreshClaims)).getTokenValue();
 
-        // 쿠키 생성
         ResponseCookie accessCookie = ResponseCookie.from("ACCESS_TOKEN", accessToken)
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
                 .path("/")
                 .maxAge(accessExpiry)
                 .build();
 
         ResponseCookie refreshCookie = ResponseCookie.from("REFRESH_TOKEN", refreshToken)
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
                 .path("/auth/refresh")
                 .maxAge(refreshExpiry)
                 .build();
@@ -83,5 +97,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write("{\"message\": \"login success\"}");
+
+        response.sendRedirect(redirectUri);
     }
 }
