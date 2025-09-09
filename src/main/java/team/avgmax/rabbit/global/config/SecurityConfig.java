@@ -2,15 +2,23 @@ package team.avgmax.rabbit.global.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import team.avgmax.rabbit.auth.config.CorsConfig;
 import team.avgmax.rabbit.auth.oauth2.CookieBearerTokenResolver;
@@ -43,13 +51,11 @@ public class SecurityConfig {
             )
             .oauth2ResourceServer(oauth2 -> oauth2
                 .bearerTokenResolver(cookieBearerTokenResolver)
-                .jwt(Customizer.withDefaults())
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login/**", "/error").permitAll()
-                .requestMatchers(HttpMethod.GET, "/auth/**").permitAll() // 공개 API 있다면
-                .requestMatchers("/admin/**").hasRole("ADMIN") // "ROLE_ADMIN"이랑 매칭됨
-                .requestMatchers("/user/**", "/auth/**").hasRole("USER")
+                .requestMatchers("/auth/**").hasRole("USER")
                 .anyRequest().hasRole("USER")
             )
             .sessionManagement(session -> session
@@ -57,5 +63,23 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    @Bean
+    Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
+        // 1) scope/scp -> SCOPE_*
+        var scopeConverter = new JwtGrantedAuthoritiesConverter(); // 기본값
+
+        // 2) roles -> 그대로(이미 ROLE_* 이므로 prefix 추가 X)
+        var rolesConverter = new JwtGrantedAuthoritiesConverter();
+        rolesConverter.setAuthoritiesClaimName("roles");
+        rolesConverter.setAuthorityPrefix("");
+
+        return jwt -> {
+            Collection<GrantedAuthority> authorities = new HashSet<>();
+            authorities.addAll(scopeConverter.convert(jwt));
+            authorities.addAll(rolesConverter.convert(jwt));
+            return new JwtAuthenticationToken(jwt, authorities);
+        };
     }
 }
