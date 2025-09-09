@@ -2,6 +2,7 @@ package team.avgmax.rabbit.bunny.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 import team.avgmax.rabbit.bunny.entity.enums.OrderType;
@@ -12,7 +13,7 @@ import team.avgmax.rabbit.user.entity.PersonalUser;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "`order`")

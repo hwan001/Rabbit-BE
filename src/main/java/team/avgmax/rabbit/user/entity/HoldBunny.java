@@ -2,6 +2,7 @@ package team.avgmax.rabbit.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.bunny.entity.Bunny;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HoldBunny extends BaseTime {
