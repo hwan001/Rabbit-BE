@@ -30,7 +30,9 @@ public class FundingService {
     public FundBunnyResponse createFundBunny(CreateFundBunnyRequest request, String userId) {
         validateBunnyName(request.bunnyName());
         validateBunnyType(request.bunnyType());
-        checkDuplicateBunnyName(request.bunnyName());
+        if (checkDuplicateBunnyName(request.bunnyName())) {
+            throw new FundingException(FundingError.BUNNY_NAME_DUPLICATE);
+        }
         
         PersonalUser user = userService.findPersonalUserById(userId);
         FundBunny fundBunny = FundBunny.create(request, user);
@@ -39,11 +41,7 @@ public class FundingService {
 
     @Transactional(readOnly = true)
     public boolean checkDuplicateBunnyName(String bunnyName) {
-        boolean isDuplicate = fundBunnyRepository.existsByBunnyName(bunnyName) || bunnyRepository.existsByBunnyName(bunnyName);
-        if (isDuplicate) {
-            throw new FundingException(FundingError.BUNNY_NAME_DUPLICATE);
-        }
-        return isDuplicate;
+        return fundBunnyRepository.existsByBunnyName(bunnyName) || bunnyRepository.existsByBunnyName(bunnyName);
     }
     
     private void validateBunnyName(String bunnyName) {
