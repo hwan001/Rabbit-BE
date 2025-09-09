@@ -21,7 +21,7 @@ public class BunnyHistory extends BaseTime {
     private LocalDate date;
     
     @Id
-    @Column(name = "bunny_id", length = 50, nullable = false)
+    @Column(name = "bunny_id", length = 26, nullable = false)
     private String bunnyId;
 
     private BigDecimal closingPrice;
@@ -35,8 +35,6 @@ public class BunnyHistory extends BaseTime {
     private BigDecimal sellQuantity;
 
     private BigDecimal tradeQuantity;
-
-    private BigDecimal gainLoss;
 
     private BigDecimal marketCap;
 }
