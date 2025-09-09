@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import team.avgmax.rabbit.funding.dto.request.CreateFundBunnyRequest;
+import team.avgmax.rabbit.funding.dto.response.FundBunnyDetailResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyResponse;
 import team.avgmax.rabbit.funding.entity.FundBunny;
 import team.avgmax.rabbit.funding.exception.FundingError;
@@ -15,6 +16,7 @@ import team.avgmax.rabbit.user.service.UserService;
 import team.avgmax.rabbit.user.entity.PersonalUser;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
 
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 import java.util.Arrays;
 
@@ -36,14 +38,28 @@ public class FundingService {
         
         PersonalUser user = userService.findPersonalUserById(userId);
         FundBunny fundBunny = FundBunny.create(request, user);
-        return FundBunnyResponse.from(fundBunnyRepository.save(fundBunny));
+        fundBunnyRepository.save(fundBunny);
+        fundBunny.setBackerCount(BigDecimal.TEN);
+        return FundBunnyResponse.from(fundBunny);
     }
 
     @Transactional(readOnly = true)
     public boolean checkDuplicateBunnyName(String bunnyName) {
         return fundBunnyRepository.existsByBunnyName(bunnyName) || bunnyRepository.existsByBunnyName(bunnyName);
     }
-    
+
+    @Transactional(readOnly = true)
+    public FundBunnyDetailResponse getFundBunnyDetail(String fundBunnyId, String userId) {
+        PersonalUser user = userService.findPersonalUserById(userId);
+        FundBunny fundBunny = findFundBunnyById(fundBunnyId);
+        return FundBunnyDetailResponse.from(fundBunny, user);
+    }
+
+    private FundBunny findFundBunnyById(String fundBunnyId) {
+        return fundBunnyRepository.findById(fundBunnyId)
+                .orElseThrow(() -> new FundingException(FundingError.FUND_BUNNY_NOT_FOUND));
+    }
+
     private void validateBunnyName(String bunnyName) {
         if (bunnyName == null || bunnyName.trim().isEmpty()) {
             throw new FundingException(FundingError.BUNNY_NAME_REQUIRED);

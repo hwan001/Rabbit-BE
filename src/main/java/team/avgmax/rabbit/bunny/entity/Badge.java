@@ -5,12 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.bunny.entity.id.BadgeId;
 import team.avgmax.rabbit.global.entity.BaseTime;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(BadgeId.class)

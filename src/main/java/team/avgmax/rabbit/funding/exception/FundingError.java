@@ -16,7 +16,8 @@ public enum FundingError implements ErrorCode {
     BUNNY_NAME_INVALID_CONSECUTIVE_HYPHEN(HttpStatus.BAD_REQUEST, "연속된 하이픈은 사용할 수 없습니다."),
     BUNNY_NAME_INVALID_CHARACTER(HttpStatus.BAD_REQUEST, "버니 이름은 영어 소문자, 숫자, 하이픈만 사용할 수 있습니다."),
     BUNNY_TYPE_REQUIRED(HttpStatus.BAD_REQUEST, "버니 타입은 필수입니다."),
-    BUNNY_TYPE_INVALID(HttpStatus.BAD_REQUEST, "지원하지 않는 버니 타입입니다. A, B, C 중 하나를 선택해주세요.");
+    BUNNY_TYPE_INVALID(HttpStatus.BAD_REQUEST, "지원하지 않는 버니 타입입니다. A, B, C 중 하나를 선택해주세요."),
+    FUND_BUNNY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 펀드버니입니다.");
 
     private final HttpStatus status;
     private final String message;

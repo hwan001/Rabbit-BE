@@ -1,5 +1,7 @@
 # 기본설정
 spring:
+  profiles:
+    active: dev
   config:
     import: optional:file:.env[.properties]
   application:
@@ -11,7 +13,7 @@ spring:
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

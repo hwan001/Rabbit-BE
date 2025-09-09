@@ -21,10 +21,6 @@ public class Education extends BaseTime {
     @Builder.Default
     private String id = UlidGenerator.generateMonotonic();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private PersonalUser user;
-
     private String schoolName;
 
     @Enumerated(EnumType.STRING)

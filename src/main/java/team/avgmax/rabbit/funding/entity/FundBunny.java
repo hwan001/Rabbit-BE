@@ -38,6 +38,7 @@ public class FundBunny extends BaseTime {
     @Enumerated(EnumType.STRING)
     private FundBunnyStatus status = FundBunnyStatus.ONGOING;
 
+    @Setter
     @Builder.Default
     private BigDecimal backerCount = BigDecimal.ZERO;
 

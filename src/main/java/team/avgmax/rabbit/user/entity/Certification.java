@@ -20,10 +20,6 @@ public class Certification extends BaseTime {
     @Builder.Default
     private String id = UlidGenerator.generateMonotonic();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private PersonalUser user;
-
     private String certificateUrl;
 
     private String name;

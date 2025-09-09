@@ -22,10 +22,6 @@ public class Career extends BaseTime {
     @Builder.Default
     private String id = UlidGenerator.generateMonotonic();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private PersonalUser user;
-
     private String companyName;
 
     @Enumerated(EnumType.STRING)
