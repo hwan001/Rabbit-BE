@@ -90,6 +90,8 @@ app:
       secure: false
       same-site: lax
     redirect-uri: http://localhost:3000/personal/home
+    access-expiry: 900  # 15분 (60 * 15)
+    refresh-expiry: 86400  # 24시간 (60 * 60 * 24)
 
 server:
   port: 8080

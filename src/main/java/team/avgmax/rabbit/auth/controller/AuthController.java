@@ -4,11 +4,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -22,6 +25,9 @@ public class AuthController {
 
     private final JwtDecoder jwtDecoder;
     private final JwtEncoder jwtEncoder;
+
+    @Value("${app.security.access-expiry}")
+    private long accessExpiry; // Access Token 15분
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -48,7 +54,6 @@ public class AuthController {
             }
 
             Instant now = Instant.now();
-            long accessExpiry = 60L * 15; // Access Token 15분
 
             JwtClaimsSet accessClaims = JwtClaimsSet.builder()
                     .issuer("rabbit-app")
@@ -111,4 +116,31 @@ public class AuthController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
+    @GetMapping("/dummy")
+    public ResponseEntity<?> dummy(HttpServletResponse response, @RequestParam("userId") String personalUserId) {
+        Instant now = Instant.now();
+
+        JwtClaimsSet accessClaims = JwtClaimsSet.builder()
+                .issuer("rabbit-app")
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(accessExpiry))
+                .subject(personalUserId) // 더미 유저 아이디
+                .claim("roles", new String[]{"ROLE_USER"})
+                .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
+        String accessToken = jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, accessClaims)).getTokenValue();
+
+        ResponseCookie accessCookie = ResponseCookie.from("ACCESS_TOKEN", accessToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(accessExpiry)
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+
+        return ResponseEntity.ok(Map.of("message", "dummy access token issued"));
+    }
 }

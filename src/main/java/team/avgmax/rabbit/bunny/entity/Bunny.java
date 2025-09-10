@@ -7,6 +7,7 @@ import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
 import team.avgmax.rabbit.bunny.entity.enums.DeveloperType;
+import team.avgmax.rabbit.funding.entity.FundBunny;
 
 import java.math.BigDecimal;
 
@@ -54,4 +55,20 @@ public class Bunny extends BaseTime {
     private String aiReview;
 
     private String aiFeedback;
+
+    public static Bunny create(FundBunny fundBunny) {
+        return Bunny.builder()
+                .user(fundBunny.getUser())
+                .bunnyName(fundBunny.getBunnyName())
+                .developerType(DeveloperType.GROWTH) // 추후 기본값 지정
+                .bunnyType(fundBunny.getType())
+                .position(fundBunny.getUser().getPosition())
+                .reliability(BigDecimal.ZERO) // 추후 계산 로직 추가
+                .currentPrice(fundBunny.getType().getPrice())
+                .closingPrice(fundBunny.getType().getPrice())
+                .marketCap(fundBunny.getType().getMarketCap())
+                .aiReview("") // 추후 AI API 로직 추가
+                .aiFeedback("") // 추후 AI API 로직 추가
+                .build();
+    }
 }

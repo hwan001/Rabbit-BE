@@ -17,6 +17,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 import team.avgmax.rabbit.user.entity.enums.Position;
+import team.avgmax.rabbit.user.exception.UserException;
+import team.avgmax.rabbit.user.exception.UserError;
 
 @Entity
 @Getter
@@ -41,7 +43,9 @@ public class PersonalUser extends User {
     @Enumerated(EnumType.STRING)
     private Position position;
 
-    private BigDecimal carrot;
+    @Builder.Default
+    @Column(precision = 20)
+    private BigDecimal carrot = BigDecimal.valueOf(50_000_000);
 
     private LocalDate birthdate;
 
@@ -74,5 +78,16 @@ public class PersonalUser extends User {
     public void addProvider(UserProvider provider) {
         providers.add(provider);
         provider.setPersonalUser(this);
+    }
+
+    public void addCarrot(BigDecimal carrot) {
+        this.carrot = this.carrot.add(carrot);
+    }
+
+    public void subtractCarrot(BigDecimal carrot) {
+        if (this.carrot.compareTo(carrot) < 0) {
+            throw new UserException(UserError.CARROT_NOT_ENOUGH);
+        }
+        this.carrot = this.carrot.subtract(carrot);
     }
 }

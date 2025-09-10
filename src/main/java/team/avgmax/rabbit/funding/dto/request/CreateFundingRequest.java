@@ -1,16 +1,15 @@
-package team.avgmax.rabbit.funding.dto.response;
+package team.avgmax.rabbit.funding.dto.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import lombok.Builder;
+
+import java.math.BigDecimal;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record ShareStatusResponse(
-        Double top1,
-        Double top2,
-        Double top3,
-        Double others,
-        Double remaining
+public record CreateFundingRequest(
+    BigDecimal fundBny
 ) {
 }
