@@ -1,19 +1,27 @@
 package team.avgmax.rabbit.bunny.dto.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import team.avgmax.rabbit.bunny.entity.Badge;
 import team.avgmax.rabbit.bunny.entity.Bunny;
+import team.avgmax.rabbit.bunny.entity.enums.BadgeImg;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
 import team.avgmax.rabbit.bunny.entity.enums.DeveloperType;
 import team.avgmax.rabbit.user.entity.enums.Position;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FetchBunnyResponse {
 
     // 기본 정보
@@ -42,12 +50,16 @@ public class FetchBunnyResponse {
     private String aiFeedback;
 
     // 배지
-    private String BadgeImgURL;
+    private List<BadgeImg> badges;
 
     // 시간
     private LocalDateTime createdAt; // 생성시간
 
-    public static FetchBunnyResponse from(Bunny bunny) {
+    public static FetchBunnyResponse from(Bunny bunny, List<Badge> badges) {
+        List<BadgeImg> badgeImgs = (badges != null)
+                ? badges.stream().map(Badge::getBadgeImg).collect(Collectors.toList())
+                : Collections.emptyList(); // NullPointException 을 대비하면서 null 이면 빈 list 를 사용할 수 있도록 함.
+
         return FetchBunnyResponse.builder()
                 .bunnyId(bunny.getId())
                 .bunnyName(bunny.getBunnyName())
@@ -65,6 +77,8 @@ public class FetchBunnyResponse {
 //                .Indicator5(bunny.)
                 .aiReview(bunny.getAiReview())
                 .aiFeedback(bunny.getAiFeedback())
+                // 배지가 없는 버니일 경우 NullPointException 방지
+                .badges(badgeImgs)
                 .createdAt(bunny.getCreatedAt())
                 .build();
     }

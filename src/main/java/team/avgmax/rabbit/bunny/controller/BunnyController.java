@@ -1,10 +1,7 @@
 package team.avgmax.rabbit.bunny.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +22,18 @@ public class BunnyController {
 
     // 버니 목록 조회
     @GetMapping
-    public ResponseEntity<List<FetchBunnyResponse>> getBunnies(@RequestParam(required = false) String filter) {
-
+    public ResponseEntity<List<FetchBunnyResponse>> getBunnyList(@RequestParam(required = false) String filter) {
+        log.info("GET 버니 목록 조회");
         BunnyFilter bunnyFilter = BunnyFilter.fromValue(filter); // IllegalAccessException 발생 시 GlobalException 에서 처리
-        List<FetchBunnyResponse> fetchBunnyResponses = bunnyService.getBunniesByFilter(bunnyFilter);
 
-        return ResponseEntity.ok(fetchBunnyResponses);
+        return ResponseEntity.ok(bunnyService.getBunniesByFilter(bunnyFilter));
+    }
+
+    // 버니 상세 조회
+    @GetMapping("/{bunnyName}")
+    public ResponseEntity<FetchBunnyResponse> getBunny(@PathVariable String bunnyName) {
+        log.info("GET 버니 상세 조회: {}",bunnyName);
+
+        return ResponseEntity.ok(bunnyService.getBunnyByName(bunnyName));
     }
 }
