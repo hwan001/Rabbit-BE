@@ -8,9 +8,11 @@ import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 import team.avgmax.rabbit.user.entity.PersonalUser;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
-import team.avgmax.rabbit.funding.entity.enums.FundBunnyStatus;
+import team.avgmax.rabbit.bunny.entity.Bunny;
+import team.avgmax.rabbit.user.entity.HoldBunny;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,12 +37,11 @@ public class FundBunny extends BaseTime {
     private BunnyType type;
 
     @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private FundBunnyStatus status = FundBunnyStatus.ONGOING;
-
-    @Builder.Default
-    @Column(precision = 20)
+    @Column(precision = 30)
     private BigDecimal collectedBny = BigDecimal.ZERO;
+
+    @OneToMany(mappedBy = "fundBunny", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Funding> fundings;
 
     public static FundBunny create(CreateFundBunnyRequest request, PersonalUser user) {
         return FundBunny.builder()
@@ -48,5 +49,23 @@ public class FundBunny extends BaseTime {
                 .bunnyName(request.bunnyName())
                 .type(request.bunnyType())
                 .build();
+    }
+
+    public void addBny(BigDecimal bny) {
+        this.collectedBny = this.collectedBny.add(bny);
+    }
+
+    public boolean isReadyForListing() {
+        return this.collectedBny.compareTo(this.type.getTotalSupply()) >= 0;
+    }
+
+    public Bunny convertToBunny() {
+        return Bunny.create(this);
+    }
+
+    public List<HoldBunny> createHoldBunnies(Bunny bunny, List<Funding> fundings) {
+        return fundings.stream()
+                .map(funding -> funding.convertToHoldBunny(bunny))
+                .toList();
     }
 }

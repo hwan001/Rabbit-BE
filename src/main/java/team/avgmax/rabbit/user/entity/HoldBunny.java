@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.bunny.entity.Bunny;
+import team.avgmax.rabbit.funding.entity.Funding;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
 
@@ -29,7 +30,17 @@ public class HoldBunny extends BaseTime {
     @JoinColumn(name = "bunny_id", nullable = false)
     private Bunny bunny;
 
+    @Column(precision = 30)
     private BigDecimal holdQuantity;
 
     private BigDecimal totalBuyAmount;
+
+    public static HoldBunny create(Bunny bunny, Funding funding) {
+        return HoldBunny.builder()
+                .bunny(bunny)
+                .holder(funding.getUser())
+                .holdQuantity(funding.getQuantity())
+                .totalBuyAmount(bunny.getCurrentPrice().multiply(funding.getQuantity()))
+                .build();
+    }
 }

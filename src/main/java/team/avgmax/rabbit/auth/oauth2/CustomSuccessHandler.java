@@ -35,8 +35,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Value("${app.security.redirect-uri}")
     private String redirectUri;
-    
 
+    @Value("${app.security.access-expiry}")
+    private long accessExpiry; // Access Token 15분
+
+    @Value("${app.security.refresh-expiry}")
+    private long refreshExpiry; // Refresh Token 1일
+    
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -45,9 +50,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         CustomOAuth2User customUser = (CustomOAuth2User) authentication.getPrincipal();
         String personalUserId = customUser.getPersoanlUser().getId();
-        
-        // Access Token (15분)
-        long accessExpiry = 60L * 15;
 
         JwtClaimsSet accessClaims = JwtClaimsSet.builder()
                 .issuer("rabbit-app")
@@ -62,9 +64,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 
         String accessToken = jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, accessClaims)).getTokenValue();
-
-        // Refresh Token (1일)
-        long refreshExpiry = 60L * 60 * 24;
 
         JwtClaimsSet refreshClaims = JwtClaimsSet.builder()
                 .issuer("rabbit-app")
