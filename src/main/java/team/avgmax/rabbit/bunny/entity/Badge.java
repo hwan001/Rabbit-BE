@@ -1,11 +1,9 @@
 package team.avgmax.rabbit.bunny.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import team.avgmax.rabbit.bunny.entity.enums.BadgeImg;
 import team.avgmax.rabbit.bunny.entity.id.BadgeId;
 import team.avgmax.rabbit.global.entity.BaseTime;
 
@@ -25,5 +23,6 @@ public class Badge extends BaseTime {
     @Column(name = "user_id", length = 26, nullable = false)
     private String userId;
 
-    private String badgeImg;
+    @Enumerated(EnumType.STRING)
+    private BadgeImg badgeImg;
 }
