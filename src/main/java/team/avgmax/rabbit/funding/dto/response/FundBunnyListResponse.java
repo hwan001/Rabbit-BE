@@ -10,12 +10,12 @@ import lombok.Builder;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record FundBunnyListResponse(
-    long totalCount,
+    long size,
     List<FundBunnyResponse> fundBunnies
 ) {
-    public static FundBunnyListResponse of(List<FundBunnyResponse> fundBunnies) {
+    public static FundBunnyListResponse from(List<FundBunnyResponse> fundBunnies) {
         return FundBunnyListResponse.builder()
-                .totalCount(fundBunnies.size())
+                .size(fundBunnies.size())
                 .fundBunnies(fundBunnies)
                 .build();
     }

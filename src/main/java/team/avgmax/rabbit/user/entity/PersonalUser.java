@@ -36,6 +36,8 @@ public class PersonalUser extends User {
 
     private String resume;
 
+    private String portfolio;
+
     @Enumerated(EnumType.STRING)
     private Position position;
 
