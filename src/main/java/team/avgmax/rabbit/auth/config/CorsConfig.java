@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 public class CorsConfig {
-    @Value("${cors.allowed-origins:http://localhost:3000}")
+    @Value("${cors.allowed-origins}")
     private List<String> allowedOrigins;
 
     @Bean
@@ -19,18 +19,11 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(allowedOrigins);
-
-        // 허용할 HTTP 메서드
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*")); 
+        configuration.setAllowCredentials(true); // 쿠키/Authorization 헤더 허용 (JWT 쿠키 전송하려면 필수)
 
-        // 허용할 헤더
-        configuration.setAllowedHeaders(List.of("*"));
-
-        // 쿠키/Authorization 헤더 허용 (JWT 쿠키 전송하려면 필수)
-        configuration.setAllowCredentials(true);
-
-        // 허용할 경로 패턴 등록
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // 허용할 경로 패턴 등록
         source.registerCorsConfiguration("/**", configuration);
 
         return source;

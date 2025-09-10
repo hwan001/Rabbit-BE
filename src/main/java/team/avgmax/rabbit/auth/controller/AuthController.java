@@ -55,7 +55,6 @@ public class AuthController {
                     .issuedAt(now)
                     .expiresAt(now.plusSeconds(accessExpiry))
                     .subject(jwt.getSubject())
-                    // refresh 토큰에 roles 안 넣었다면, DB 조회해서 roles 다시 가져오는 게 안전
                     .claim("roles", jwt.getClaim("roles"))
                     .build();
 
