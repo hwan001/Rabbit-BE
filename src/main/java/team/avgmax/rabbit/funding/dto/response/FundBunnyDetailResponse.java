@@ -13,6 +13,7 @@ import team.avgmax.rabbit.user.entity.PersonalUser;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record FundBunnyDetailResponse(
+        String fundBunnyId,
         String bunnyName,
         String bunnyType,
         BigDecimal targetBny,
@@ -25,11 +26,12 @@ public record FundBunnyDetailResponse(
     ) {
     public static FundBunnyDetailResponse from(FundBunny fundBunny, PersonalUser user) {
         return FundBunnyDetailResponse.builder()
+                .fundBunnyId(fundBunny.getId())
                 .bunnyName(fundBunny.getBunnyName())
                 .bunnyType(fundBunny.getType().name())
                 .targetBny(fundBunny.getType().getTotalSupply())
-                .collectedBny(null) // 펀딩 등록 구현 이후 개발
-                .remainingBny(null) // 펀딩 등록 구현 이후 개발
+                .collectedBny(fundBunny.getCollectedBny())
+                .remainingBny(fundBunny.getType().getTotalSupply().subtract(fundBunny.getCollectedBny()))
                 .shareStatus(null) // 펀딩 등록 구현 이후 개발
                 .myAccountBny(user.getCarrot().divide(fundBunny.getType().getPrice(), RoundingMode.DOWN)) // 보유 캐럿 조회 구현 이후 개발
                 .myAccountC(user.getCarrot()) // 보유 캐럿 조회 구현 이후 개발

@@ -1,12 +1,16 @@
 package team.avgmax.rabbit.funding.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import team.avgmax.rabbit.funding.dto.request.CreateFundBunnyRequest;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyDetailResponse;
+import team.avgmax.rabbit.funding.dto.response.FundBunnyListResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyResponse;
+import team.avgmax.rabbit.funding.controller.enums.FundBunnySortType;
 import team.avgmax.rabbit.funding.entity.FundBunny;
 import team.avgmax.rabbit.funding.exception.FundingError;
 import team.avgmax.rabbit.funding.exception.FundingException;
@@ -16,9 +20,9 @@ import team.avgmax.rabbit.user.service.UserService;
 import team.avgmax.rabbit.user.entity.PersonalUser;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
 
-import java.math.BigDecimal;
 import java.util.regex.Pattern;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,14 +42,24 @@ public class FundingService {
         
         PersonalUser user = userService.findPersonalUserById(userId);
         FundBunny fundBunny = FundBunny.create(request, user);
-        fundBunnyRepository.save(fundBunny);
-        fundBunny.setBackerCount(BigDecimal.TEN);
-        return FundBunnyResponse.from(fundBunny);
+        return FundBunnyResponse.from(fundBunnyRepository.save(fundBunny));
     }
 
     @Transactional(readOnly = true)
     public boolean checkDuplicateBunnyName(String bunnyName) {
         return fundBunnyRepository.existsByBunnyName(bunnyName) || bunnyRepository.existsByBunnyName(bunnyName);
+    }
+
+    @Transactional(readOnly = true)
+    public FundBunnyListResponse getFundBunnyList(FundBunnySortType sortType, Pageable pageable) {
+        Page<FundBunny> fundBunnies = switch (sortType) {
+            case MOST_INVESTED -> fundBunnyRepository.findAllByOrderByCollectedBnyDesc(pageable);
+            case LEAST_INVESTED -> fundBunnyRepository.findAllByOrderByCollectedBnyAsc(pageable);
+            case OLDEST -> fundBunnyRepository.findAllByOrderByCreatedAtAsc(pageable);
+            case NEWEST -> fundBunnyRepository.findAllByOrderByCreatedAtDesc(pageable);
+        };
+        List<FundBunnyResponse> fundBunniesResponse = FundBunnyResponse.from(fundBunnies.getContent());
+        return FundBunnyListResponse.from(fundBunniesResponse);
     }
 
     @Transactional(readOnly = true)

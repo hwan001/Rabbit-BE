@@ -2,6 +2,7 @@ package team.avgmax.rabbit.funding.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -15,24 +16,30 @@ import team.avgmax.rabbit.funding.entity.FundBunny;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record FundBunnyResponse(
     String fundBunnyId,
-    String userId,
     String bunnyName,
     BunnyType bunnyType,
-    BigDecimal marketCap,
-    BigDecimal totalSupply,
-    BigDecimal price,
-    LocalDateTime createdAt
+    BigDecimal targetBny,
+    BigDecimal collectedBny,
+    BigDecimal remainingBny,
+    LocalDateTime createdAt,
+    LocalDateTime endAt
 ) {
     public static FundBunnyResponse from(FundBunny fundBunny) {
         return FundBunnyResponse.builder()
                 .fundBunnyId(fundBunny.getId())
-                .userId(fundBunny.getUser().getId())
                 .bunnyName(fundBunny.getBunnyName())
                 .bunnyType(fundBunny.getType())
-                .marketCap(fundBunny.getType().getMarketCap())
-                .totalSupply(fundBunny.getType().getTotalSupply())
-                .price(fundBunny.getType().getPrice())
+                .targetBny(fundBunny.getType().getTotalSupply())
+                .collectedBny(fundBunny.getCollectedBny())
+                .remainingBny(fundBunny.getType().getTotalSupply().subtract(fundBunny.getCollectedBny()))
                 .createdAt(fundBunny.getCreatedAt())
+                .endAt(fundBunny.getCreatedAt().plusDays(3))
                 .build();
+    }
+
+    public static List<FundBunnyResponse> from(List<FundBunny> fundBunnies) {
+        return fundBunnies.stream()
+                .map(FundBunnyResponse::from)
+                .toList();
     }
 }

@@ -1,11 +1,13 @@
 package team.avgmax.rabbit.funding.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import team.avgmax.rabbit.funding.service.FundingService;
 import team.avgmax.rabbit.funding.dto.request.CreateFundBunnyRequest;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyDetailResponse;
+import team.avgmax.rabbit.funding.dto.response.FundBunnyListResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyResponse;
+import team.avgmax.rabbit.funding.controller.enums.FundBunnySortType;
 
 @Slf4j
 @RestController
@@ -42,11 +46,12 @@ public class FundingController {
         return ResponseEntity.ok(fundingService.createFundBunny(request, userId));
     }
 
-    // // 펀딩 중인 버니 목록 조회
-    // @GetMapping("/fund-bunnies")
-    // public ResponseEntity<FundBunnyListResponse> getFundBunnyList(@RequestParam(required = false) Boolean endingSoon) {
-    //     return ResponseEntity.ok(fundingService.getFundBunnyList(endingSoon));
-    // }
+    // 펀딩 중인 버니 목록 조회
+    @GetMapping("/fund-bunnies")
+    public ResponseEntity<FundBunnyListResponse> getFundBunnyList(@RequestParam(defaultValue = "newest") String sortType, Pageable pageable) {
+        log.info("GET 펀딩 중인 버니 목록 조회: sort={}", sortType);
+        return ResponseEntity.ok(fundingService.getFundBunnyList(FundBunnySortType.fromValue(sortType), pageable));
+    }
 
     // 펀딩 중인 버니 상세 조회
     @GetMapping("/fund-bunnies/{fundBunnyId}")

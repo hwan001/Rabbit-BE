@@ -24,7 +24,7 @@ public class FundBunny extends BaseTime {
     @Builder.Default
     private String id = UlidGenerator.generateMonotonic();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private PersonalUser user;
 
@@ -38,9 +38,9 @@ public class FundBunny extends BaseTime {
     @Enumerated(EnumType.STRING)
     private FundBunnyStatus status = FundBunnyStatus.ONGOING;
 
-    @Setter
     @Builder.Default
-    private BigDecimal backerCount = BigDecimal.ZERO;
+    @Column(precision = 20)
+    private BigDecimal collectedBny = BigDecimal.ZERO;
 
     public static FundBunny create(CreateFundBunnyRequest request, PersonalUser user) {
         return FundBunny.builder()

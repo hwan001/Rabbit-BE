@@ -2,7 +2,6 @@ package team.avgmax.rabbit.user.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import team.avgmax.rabbit.funding.exception.FundingError;
 
 @Getter
 @RequiredArgsConstructor
