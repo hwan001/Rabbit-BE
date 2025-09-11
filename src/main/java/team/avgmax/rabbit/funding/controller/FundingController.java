@@ -1,6 +1,7 @@
 package team.avgmax.rabbit.funding.controller;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ import team.avgmax.rabbit.funding.dto.response.FundingResponse;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class FundingController {
+public class FundingController implements FundingApiDocs {
 
     private final FundingService fundingService;
 
@@ -60,8 +61,8 @@ public class FundingController {
 
     // 펀딩 중인 버니 목록 조회
     @GetMapping("/fund-bunnies")
-    public ResponseEntity<FundBunnyListResponse> getFundBunnyList(@RequestParam(defaultValue = "newest") String sortType, Pageable pageable) {
-        log.info("GET 펀딩 중인 버니 목록 조회: sort={}", sortType);
+    public ResponseEntity<FundBunnyListResponse> getFundBunnyList(@RequestParam(defaultValue = "newest") String sortType, @PageableDefault(size = 15, sort = {}) Pageable pageable) {
+        log.info("GET 펀딩 중인 버니 목록 조회: sortType={}", sortType);
         return ResponseEntity.ok(fundingService.getFundBunnyList(FundBunnySortType.fromValue(sortType), pageable));
     }
 
