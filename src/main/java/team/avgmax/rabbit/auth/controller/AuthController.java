@@ -141,6 +141,6 @@ public class AuthController {
 
         response.setHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
-        return ResponseEntity.ok(Map.of("message", "dummy access token issued"));
+        return ResponseEntity.ok(Map.of("message", "더미 액세스 토큰 발급"));
     }
 }

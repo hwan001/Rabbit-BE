@@ -146,14 +146,14 @@ public class FundingService {
         }
     }
 
-    private void validateBnyQuantity(FundBunny fundBunny, BigDecimal fundBny) {
-        if (fundBny.compareTo(BigDecimal.ZERO) <= 0) {
+    private void validateBnyQuantity(FundBunny fundBunny, BigDecimal quantity) {
+        if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
             throw new FundingException(FundingError.BNY_NOT_POSITIVE);
         }
-        if (fundBny.compareTo(fundBunny.getType().getTotalSupply().multiply(new BigDecimal("0.5"))) > 0) {
+        if (quantity.compareTo(fundBunny.getType().getTotalSupply().multiply(new BigDecimal("0.5"))) > 0) {
             throw new FundingException(FundingError.FUND_BNY_OVER_LIMIT);
         }
-        if (fundBny.compareTo(fundBunny.getType().getTotalSupply().subtract(fundBunny.getCollectedBny())) > 0) {
+        if (quantity.compareTo(fundBunny.getType().getTotalSupply().subtract(fundBunny.getCollectedBny())) > 0) {
             throw new FundingException(FundingError.FUND_BNY_OVER_LIMIT);
         }
     }

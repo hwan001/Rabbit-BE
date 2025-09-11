@@ -2,11 +2,8 @@ package team.avgmax.rabbit.user.service;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 
 import team.avgmax.rabbit.user.dto.response.CarrotsResponse;
 import team.avgmax.rabbit.user.dto.response.HoldBunniesResponse;
@@ -18,12 +15,8 @@ import team.avgmax.rabbit.user.exception.UserError;
 import team.avgmax.rabbit.user.exception.UserException;
 import team.avgmax.rabbit.user.entity.UserProvider;
 import team.avgmax.rabbit.user.entity.enums.ProviderType;
-import team.avgmax.rabbit.user.exception.UserException;
-import team.avgmax.rabbit.user.exception.UserError;
 import team.avgmax.rabbit.user.repository.PersonalUserRepository;
 import team.avgmax.rabbit.user.repository.custom.HoldBunnyRepositoryCustomImpl;
-import team.avgmax.rabbit.user.repository.custom.HoldBunnyRepositoryCustom;
-import team.avgmax.rabbit.user.repository.custom.OrderRepositoryCustom;
 import team.avgmax.rabbit.user.repository.custom.OrderRepositoryCustomImpl;
 
 @Service
