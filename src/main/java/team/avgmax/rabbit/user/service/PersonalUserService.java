@@ -18,6 +18,8 @@ import team.avgmax.rabbit.user.exception.UserError;
 import team.avgmax.rabbit.user.exception.UserException;
 import team.avgmax.rabbit.user.entity.UserProvider;
 import team.avgmax.rabbit.user.entity.enums.ProviderType;
+import team.avgmax.rabbit.user.exception.UserException;
+import team.avgmax.rabbit.user.exception.UserError;
 import team.avgmax.rabbit.user.repository.PersonalUserRepository;
 import team.avgmax.rabbit.user.repository.custom.HoldBunnyRepositoryCustomImpl;
 import team.avgmax.rabbit.user.repository.custom.HoldBunnyRepositoryCustom;

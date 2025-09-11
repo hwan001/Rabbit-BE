@@ -33,7 +33,7 @@ public record FundBunnyResponse(
                 .collectedBny(fundBunny.getCollectedBny())
                 .remainingBny(fundBunny.getType().getTotalSupply().subtract(fundBunny.getCollectedBny()))
                 .createdAt(fundBunny.getCreatedAt())
-                .endAt(fundBunny.getCreatedAt().plusDays(3))
+                .endAt(fundBunny.getEndAt())
                 .build();
     }
 
