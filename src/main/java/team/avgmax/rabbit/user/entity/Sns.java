@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.entity.enums.LinkType;
 
 @Entity
 @Getter
@@ -20,7 +21,8 @@ public class Sns extends BaseTime {
 
     private String url;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private LinkType type;
 
     private Integer priority;
 }

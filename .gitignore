@@ -39,6 +39,5 @@ out/
 ### Properties ###
 application-dev.yml
 application.properties
-.properties
 .env
 src/main/generated/

@@ -11,12 +11,14 @@ import team.avgmax.rabbit.user.entity.Sns;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record SnsResponse(
     String url,
-    String image
+    String type,
+    String favicon
 ) {
     public static SnsResponse from(Sns sns) {
         return SnsResponse.builder()
                 .url(sns.getUrl())
-                // .image()
+                .type(sns.getType().name())
+                .favicon(sns.getType().getFaviconUrl(sns.getUrl()))
                 .build();
     }
 
