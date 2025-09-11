@@ -12,13 +12,13 @@ public class CookieBearerTokenResolver implements BearerTokenResolver {
 
     @Override
     public String resolve(HttpServletRequest request) {
-        // 1) Authorization 헤더 확인
+        // 1. Authorization 헤더에서 Bearer 토큰 있으면 추출
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
 
-        // 2) 없으면 쿠키에서 확인 (ACCESS_TOKEN)
+        // 2. 쿠키에서 ACCESS_TOKEN 있으면 추출
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("ACCESS_TOKEN".equals(cookie.getName())) {

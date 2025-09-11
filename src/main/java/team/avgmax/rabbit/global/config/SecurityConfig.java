@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login/**", "/error", "/fund-bunnies/**").permitAll() // 테스트 기간 동안 펀드 버니 전체 허용
+                .requestMatchers("/login/**", "/error", "/fund-bunnies/**", "/auth/dummy").permitAll() // 테스트 기간 동안 펀드 버니 전체 허용
                 .requestMatchers("/auth/**").hasRole("USER")
                 .requestMatchers("/admin/**").hasRole("ADMIN") // "ROLE_ADMIN"이랑 매칭됨
                 .requestMatchers("/user/**", "/auth/**").hasRole("USER")
