@@ -2,6 +2,9 @@ package team.avgmax.rabbit.global.exception;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.AuthenticationException;
@@ -42,7 +45,14 @@ public class GlobalExceptionHandler {
 
     // 기타 모든 예외 처리 (500 서버 에러)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    public ResponseEntity<Object> handleException(HttpServletRequest req, Exception ex) {
+         if (req.getRequestURI().startsWith("/v3/api-docs")
+            || req.getRequestURI().startsWith("/swagger-ui")) {
+            throw new RuntimeException(ex);
+        }
+
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ex.getMessage());
     }
 }

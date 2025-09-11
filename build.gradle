@@ -42,7 +42,7 @@ dependencies {
 	implementation "com.github.f4b6a3:ulid-creator:5.2.3"
 	
 	// Swagger-UI
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
 	// lombok (최근 버전으로 명시 -> @superbuilder 사용)
 	compileOnly 'org.projectlombok:lombok:1.18.30'
