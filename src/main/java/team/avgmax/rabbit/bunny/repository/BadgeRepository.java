@@ -5,7 +5,6 @@ import team.avgmax.rabbit.bunny.entity.Badge;
 import team.avgmax.rabbit.bunny.entity.id.BadgeId;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BadgeRepository extends JpaRepository<Badge, BadgeId> {
 

@@ -7,6 +7,8 @@ import team.avgmax.rabbit.user.entity.PersonalUser;
 import team.avgmax.rabbit.user.entity.enums.Role;
 import team.avgmax.rabbit.user.entity.UserProvider;
 import team.avgmax.rabbit.user.entity.enums.ProviderType;
+import team.avgmax.rabbit.user.exception.UserException;
+import team.avgmax.rabbit.user.exception.UserError;
 import team.avgmax.rabbit.user.repository.PersonalUserRepository;
 
 @Service
@@ -37,5 +39,10 @@ public class PersonalUserService {
         }
 
         return user;
+    }
+
+    public PersonalUser findPersonalUserById(String userId) {
+        return personalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND));
     }
 }

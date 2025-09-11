@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import team.avgmax.rabbit.funding.service.FundingService;
 import team.avgmax.rabbit.funding.dto.request.CreateFundBunnyRequest;
 import team.avgmax.rabbit.funding.dto.request.CreateFundingRequest;
+import team.avgmax.rabbit.funding.dto.response.FundBunnyCountResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyDetailResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyListResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyResponse;
@@ -33,6 +34,13 @@ import team.avgmax.rabbit.funding.dto.response.FundingResponse;
 public class FundingController {
 
     private final FundingService fundingService;
+
+    // 펀딩 버니 수 현황 조회
+    @GetMapping("/fund-bunnies/count")
+    public ResponseEntity<FundBunnyCountResponse> getFundBunnyCount() {
+        log.info("GET 펀딩 버니 수 현황 조회");
+        return ResponseEntity.ok(fundingService.getFundBunnyCount());
+    }
 
     // 버니 이름 중복 체크
     @RequestMapping(value = "/fund-bunnies/{bunnyName}", method = RequestMethod.HEAD)

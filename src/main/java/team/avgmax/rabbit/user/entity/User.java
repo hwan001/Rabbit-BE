@@ -25,4 +25,8 @@ public abstract class User extends BaseTime {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String phone;
+
+    public void updateRoleToBunny() {
+        this.role = Role.ROLE_BUNNY;
+    }
 }

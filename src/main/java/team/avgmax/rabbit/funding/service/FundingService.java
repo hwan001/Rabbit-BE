@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import team.avgmax.rabbit.funding.dto.request.CreateFundBunnyRequest;
 import team.avgmax.rabbit.funding.dto.request.CreateFundingRequest;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyDetailResponse;
+import team.avgmax.rabbit.funding.dto.response.FundBunnyCountResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyListResponse;
 import team.avgmax.rabbit.funding.dto.response.FundBunnyResponse;
 import team.avgmax.rabbit.funding.dto.response.FundingResponse;
@@ -22,13 +23,14 @@ import team.avgmax.rabbit.bunny.repository.BunnyRepository;
 import team.avgmax.rabbit.funding.repository.FundBunnyRepository;
 import team.avgmax.rabbit.funding.repository.FundingRepository;
 import team.avgmax.rabbit.user.repository.HoldBunnyRepository;
-import team.avgmax.rabbit.user.service.UserService;
+import team.avgmax.rabbit.user.service.PersonalUserService;
 import team.avgmax.rabbit.user.entity.HoldBunny;
 import team.avgmax.rabbit.user.entity.PersonalUser;
 import team.avgmax.rabbit.bunny.entity.Bunny;
 import team.avgmax.rabbit.bunny.entity.enums.BunnyType;
 
 import java.util.regex.Pattern;
+
 import java.util.Arrays;
 import java.util.List;
 import java.math.BigDecimal;
@@ -37,12 +39,17 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class FundingService {
-    private final UserService userService;
+    private final PersonalUserService personalUserService;
 
     private final FundingRepository fundingRepository;
     private final FundBunnyRepository fundBunnyRepository;
     private final BunnyRepository bunnyRepository;
     private final HoldBunnyRepository holdBunnyRepository;
+
+    @Transactional(readOnly = true)
+    public FundBunnyCountResponse getFundBunnyCount() {
+        return FundBunnyCountResponse.of(bunnyRepository.count(), fundBunnyRepository.count(), fundBunnyRepository.countByEndAtWithin24Hours());
+    }
 
     @Transactional
     public FundBunnyResponse createFundBunny(CreateFundBunnyRequest request, String userId) {
@@ -52,7 +59,7 @@ public class FundingService {
             throw new FundingException(FundingError.BUNNY_NAME_DUPLICATE);
         }
         
-        PersonalUser user = userService.findPersonalUserById(userId);
+        PersonalUser user = personalUserService.findPersonalUserById(userId);
         FundBunny fundBunny = FundBunny.create(request, user);
         return FundBunnyResponse.from(fundBunnyRepository.save(fundBunny));
     }
@@ -65,10 +72,10 @@ public class FundingService {
     @Transactional(readOnly = true)
     public FundBunnyListResponse getFundBunnyList(FundBunnySortType sortType, Pageable pageable) {
         Page<FundBunny> fundBunnies = switch (sortType) {
-            case MOST_INVESTED -> fundBunnyRepository.findAllByOrderByCollectedBnyDesc(pageable);
-            case LEAST_INVESTED -> fundBunnyRepository.findAllByOrderByCollectedBnyAsc(pageable);
             case OLDEST -> fundBunnyRepository.findAllByOrderByCreatedAtAsc(pageable);
             case NEWEST -> fundBunnyRepository.findAllByOrderByCreatedAtDesc(pageable);
+            case MOST_INVESTED -> fundBunnyRepository.findAllByOrderByCollectedAmountDesc(pageable);
+            case LEAST_INVESTED -> fundBunnyRepository.findAllByOrderByCollectedAmountAsc(pageable);
         };
         List<FundBunnyResponse> fundBunniesResponse = FundBunnyResponse.from(fundBunnies.getContent());
         return FundBunnyListResponse.from(fundBunniesResponse);
@@ -76,7 +83,7 @@ public class FundingService {
 
     @Transactional(readOnly = true)
     public FundBunnyDetailResponse getFundBunnyDetail(String fundBunnyId, String userId) {
-        PersonalUser user = userService.findPersonalUserById(userId);
+        PersonalUser user = personalUserService.findPersonalUserById(userId);
         FundBunny fundBunny = findFundBunnyById(fundBunnyId);
         
         List<UserFundingSummary> userFundingSummaries = fundingRepository.findUserFundingSummariesByFundBunnyOrderByQuantityDesc(fundBunny);
@@ -87,7 +94,7 @@ public class FundingService {
 
     @Transactional
     public Optional<FundingResponse> createFunding(String fundBunnyId, String userId, CreateFundingRequest request) {
-        PersonalUser user = userService.findPersonalUserById(userId);
+        PersonalUser user = personalUserService.findPersonalUserById(userId);
         FundBunny fundBunny = findFundBunnyById(fundBunnyId);
 
         validateBnyQuantity(fundBunny, request.fundBny());
@@ -152,18 +159,21 @@ public class FundingService {
     }
 
     private void processListing(FundBunny fundBunny) {
-        // 1. FundBunny를 Bunny로 변환하여 저장
+        // 1. 상장한 User의 Role을 BUNNY로 변경
+        fundBunny.getUser().updateRoleToBunny();
+
+        // 2. FundBunny를 Bunny로 변환하여 저장
         Bunny bunny = fundBunny.convertToBunny();
         bunnyRepository.save(bunny);
         
-        // 2. 해당 FundBunny의 모든 Funding 조회
+        // 3. 해당 FundBunny의 모든 Funding 조회
         List<Funding> fundings = fundingRepository.findByFundBunny(fundBunny);
         
-        // 3. 조회한 Funding들로 HoldBunny들을 생성하여 저장
+        // 4. 조회한 Funding들로 HoldBunny들을 생성하여 저장
         List<HoldBunny> holdBunnies = fundBunny.createHoldBunnies(bunny, fundings);
         holdBunnyRepository.saveAll(holdBunnies);
-        
-        // 4. FundBunny 삭제 (CASCADE로 Funding도 함께 삭제)
+
+        // 5. FundBunny 삭제 (CASCADE로 Funding도 함께 삭제)
         fundBunnyRepository.delete(fundBunny);
     }
 }
