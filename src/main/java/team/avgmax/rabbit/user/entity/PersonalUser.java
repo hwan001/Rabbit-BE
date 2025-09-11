@@ -72,12 +72,24 @@ public class PersonalUser extends User {
     @Builder.Default
     @JoinColumn(name = "user_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Education> education = new ArrayList<>();
+    private List<Education> educations = new ArrayList<>();
 
     // === 연관관계 편의 메서드 ===
+    public void updateBasicInfo(String name, LocalDate birthdate, String image, String resume, Position position) {
+        this.changeName(name);
+        this.changeImage(image);
+        this.birthdate = birthdate;
+        this.resume = resume;
+        this.position = position;   
+    } 
+
     public void addProvider(UserProvider provider) {
         providers.add(provider);
         provider.setPersonalUser(this);
+    }
+
+    public void addEducation(Education education){
+        educations.add(education);
     }
 
     public void addCarrot(BigDecimal carrot) {

@@ -31,7 +31,7 @@ public record PersonalUserResponse(
                 .resume(personalUser.getResume())
                 .link(SnsResponse.from(personalUser.getSns()))
                 .position(personalUser.getPosition().name())
-                .education(EducationResponse.from(personalUser.getEducation()))
+                .education(EducationResponse.from(personalUser.getEducations()))
                 .career(CareerResponse.from(personalUser.getCareer()))
                 .certification(CertificationResponse.from(personalUser.getCertification()))
                 .skill(personalUser.getSkill().stream()

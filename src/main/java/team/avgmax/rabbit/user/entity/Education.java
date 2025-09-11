@@ -3,8 +3,11 @@ package team.avgmax.rabbit.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import team.avgmax.rabbit.bunny.entity.Bunny;
+import team.avgmax.rabbit.funding.entity.Funding;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.dto.request.EducationRequest;
 import team.avgmax.rabbit.user.entity.enums.EducationStatus;
 
 import java.time.LocalDate;
@@ -35,4 +38,16 @@ public class Education extends BaseTime {
     private String certificateUrl;
 
     private Integer priority;
+
+     public static Education create(EducationRequest educationRequest) {
+        return Education.builder()
+                .schoolName(educationRequest.schoolName())
+                .status(educationRequest.status())
+                .major(educationRequest.major())
+                .startDate(educationRequest.startDate())
+                .endDate(educationRequest.endDate())
+                .certificateUrl(educationRequest.certificateUrl())
+                .priority(educationRequest.priority())
+                .build();
+    }
 }

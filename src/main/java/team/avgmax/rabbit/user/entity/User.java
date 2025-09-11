@@ -29,4 +29,16 @@ public abstract class User extends BaseTime {
     public void updateRoleToBunny() {
         this.role = Role.ROLE_BUNNY;
     }
+
+    protected void changeName(String name) {
+        this.name = name;
+    }
+
+    protected void changeImage(String image) {
+        this.image = image;
+    }
+    
+    protected void changeEmail(String email) {
+        this.email = email;
+    }
 }

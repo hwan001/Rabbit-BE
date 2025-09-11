@@ -36,7 +36,7 @@ public record SpecResponse(
             .skill(user.getSkill().stream().map(Skill::getSkillName).toList())
             .certification(CertificationResponse.from(user.getCertification()))
             .career(CareerResponse.from(user.getCareer()))
-            .education(EducationResponse.from(user.getEducation()))
+            .education(EducationResponse.from(user.getEducations()))
             .build();
     }
 }

@@ -37,7 +37,7 @@ public class PersonalUserController {
         String personalUserId = jwt.getSubject();
         log.info("내 정보 수정 : {}", personalUserId);
         return "Update My Info";
-    }   
+    }
 
     @GetMapping("/me/carrots")
     public ResponseEntity<CarrotsResponse> getMyCarrots(@AuthenticationPrincipal Jwt jwt) {
