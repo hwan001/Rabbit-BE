@@ -12,6 +12,7 @@ import team.avgmax.rabbit.bunny.entity.Bunny;
 import team.avgmax.rabbit.user.entity.HoldBunny;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -40,6 +41,8 @@ public class FundBunny extends BaseTime {
     @Column(precision = 30)
     private BigDecimal collectedBny = BigDecimal.ZERO;
 
+    private LocalDateTime endAt;
+
     @OneToMany(mappedBy = "fundBunny", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Funding> fundings;
 
@@ -48,6 +51,7 @@ public class FundBunny extends BaseTime {
                 .user(user)
                 .bunnyName(request.bunnyName())
                 .type(request.bunnyType())
+                .endAt(LocalDateTime.now().plusDays(3))
                 .build();
     }
 
