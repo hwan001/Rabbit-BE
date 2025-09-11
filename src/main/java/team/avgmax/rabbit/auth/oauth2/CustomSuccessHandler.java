@@ -36,11 +36,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Value("${app.security.redirect-uri}")
     private String redirectUri;
 
-    @Value("${app.security.access-expiry}")
-    private long accessExpiry; // Access Token 15분
+    @Value("${app.security.jwt.access-expiry}")
+    private long accessExpiry;
 
-    @Value("${app.security.refresh-expiry}")
-    private long refreshExpiry; // Refresh Token 1일
+    @Value("${app.security.jwt.refresh-expiry}")
+    private long refreshExpiry;
     
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,

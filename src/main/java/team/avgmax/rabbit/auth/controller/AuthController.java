@@ -26,8 +26,8 @@ public class AuthController {
     private final JwtDecoder jwtDecoder;
     private final JwtEncoder jwtEncoder;
 
-    @Value("${app.security.access-expiry}")
-    private long accessExpiry; // Access Token 15분
+    @Value("${app.security.jwt.access-expiry}")
+    private long accessExpiry;
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
