@@ -79,5 +79,9 @@ public class PersonalUserService {
     public OrdersResponse getOrdersById(String personalUserId) {
         return orderRepositoryCustom.findOrdersByUserId(personalUserId);
     }
-    
+
+    public PersonalUser findPersonalUserById(String userId) {
+        return personalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND));
+    }
 }
