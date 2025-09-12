@@ -11,6 +11,7 @@ import team.avgmax.rabbit.user.entity.Certification;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CertificationResponse(
+    String certificationId,
     String certificateUrl,
     String name,
     String ca,
@@ -18,6 +19,7 @@ public record CertificationResponse(
 ) {
     public static CertificationResponse from(Certification certification) {
         return CertificationResponse.builder()
+                .certificationId(certification.getId())
                 .certificateUrl(certification.getCertificateUrl())
                 .name(certification.getName())
                 .ca(certification.getCa())

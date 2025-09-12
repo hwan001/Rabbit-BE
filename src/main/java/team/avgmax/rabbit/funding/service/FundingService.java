@@ -53,13 +53,10 @@ public class FundingService {
 
     @Transactional
     public FundBunnyResponse createFundBunny(CreateFundBunnyRequest request, String userId) {
+        PersonalUser user = personalUserService.findPersonalUserById(userId);
+        validateAlreadyFundBunnyUser(user);
         validateBunnyName(request.bunnyName());
         validateBunnyType(request.bunnyType());
-        if (checkDuplicateBunnyName(request.bunnyName())) {
-            throw new FundingException(FundingError.BUNNY_NAME_DUPLICATE);
-        }
-        
-        PersonalUser user = personalUserService.findPersonalUserById(userId);
         FundBunny fundBunny = FundBunny.create(request, user);
         return FundBunnyResponse.from(fundBunnyRepository.save(fundBunny));
     }
@@ -119,6 +116,12 @@ public class FundingService {
                 .orElseThrow(() -> new FundingException(FundingError.FUND_BUNNY_NOT_FOUND));
     }
 
+    private void validateAlreadyFundBunnyUser(PersonalUser user) {
+        if (fundBunnyRepository.existsByUser(user)) {
+            throw new FundingException(FundingError.ALREADY_FUND_BUNNY_USER);
+        }
+    }
+
     private void validateBunnyName(String bunnyName) {
         if (bunnyName == null || bunnyName.trim().isEmpty()) {
             throw new FundingException(FundingError.BUNNY_NAME_REQUIRED);
@@ -134,6 +137,9 @@ public class FundingService {
         }
         if (!Pattern.compile("^[a-z0-9]([a-z0-9-]*[a-z0-9])?$").matcher(bunnyName).matches()) {
             throw new FundingException(FundingError.BUNNY_NAME_INVALID_CHARACTER);
+        }
+        if (checkDuplicateBunnyName(bunnyName)) {
+            throw new FundingException(FundingError.BUNNY_NAME_DUPLICATE);
         }
     }
     

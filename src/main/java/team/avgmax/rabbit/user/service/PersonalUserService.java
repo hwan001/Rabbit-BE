@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import team.avgmax.rabbit.user.dto.request.UpdatePersonalUserRequest;
 import team.avgmax.rabbit.user.dto.response.CarrotsResponse;
 import team.avgmax.rabbit.user.dto.response.HoldBunniesResponse;
 import team.avgmax.rabbit.user.dto.response.OrdersResponse;
@@ -51,28 +52,40 @@ public class PersonalUserService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public PersonalUserResponse getUserById(String personalUserId) {
-        PersonalUser personalUser = personalUserRepository.findById(personalUserId)
-                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND));
+        PersonalUser personalUser = findPersonalUserById(personalUserId);
 
         return PersonalUserResponse.from(personalUser);
     }
 
+    public PersonalUserResponse updateUserById(String personalUserId, UpdatePersonalUserRequest request) {
+        PersonalUser personalUser = findPersonalUserById(personalUserId);
+        
+        personalUser.updatePersonalUser(request);
+        PersonalUser savedUser = personalUserRepository.save(personalUser);
+
+        return PersonalUserResponse.from(savedUser);
+    }
+
+    @Transactional(readOnly = true)
     public CarrotsResponse getCarrotsById(String personalUserId) {
-        PersonalUser personalUser = personalUserRepository.findById(personalUserId)
-                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND));
+        PersonalUser personalUser = findPersonalUserById(personalUserId);
         
         return CarrotsResponse.from(personalUser);
     }
 
+    @Transactional(readOnly = true)
     public HoldBunniesResponse getBunniesById(String personalUserId) {
         return holdBunnyRepositoryCustom.findHoldbunniesByUserId(personalUserId);
     }
 
+    @Transactional(readOnly = true)
     public OrdersResponse getOrdersById(String personalUserId) {
         return orderRepositoryCustom.findOrdersByUserId(personalUserId);
     }
 
+    @Transactional(readOnly = true)
     public PersonalUser findPersonalUserById(String userId) {
         return personalUserRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND));

@@ -16,6 +16,7 @@ public record PersonalUserResponse(
         LocalDate birthdate,
         String image,
         String resume,
+        String portfolio,
         List<SnsResponse> link,
         String position,
         List<EducationResponse> education,
@@ -29,6 +30,7 @@ public record PersonalUserResponse(
                 .birthdate(personalUser.getBirthdate())
                 .image(personalUser.getImage())
                 .resume(personalUser.getResume())
+                .portfolio(personalUser.getPortfolio())
                 .link(SnsResponse.from(personalUser.getSns()))
                 .position(personalUser.getPosition().name())
                 .education(EducationResponse.from(personalUser.getEducation()))

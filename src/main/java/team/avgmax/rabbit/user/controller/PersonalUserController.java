@@ -6,10 +6,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import team.avgmax.rabbit.user.dto.request.UpdatePersonalUserRequest;
 import team.avgmax.rabbit.user.dto.response.CarrotsResponse;
 import team.avgmax.rabbit.user.dto.response.HoldBunniesResponse;
 import team.avgmax.rabbit.user.dto.response.OrdersResponse;
@@ -33,10 +35,10 @@ public class PersonalUserController {
     }
 
     @PutMapping("/me/info")
-    public String updateMyInfo(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<PersonalUserResponse> updateMyInfo(@AuthenticationPrincipal Jwt jwt, @RequestBody UpdatePersonalUserRequest request) {
         String personalUserId = jwt.getSubject();
         log.info("내 정보 수정 : {}", personalUserId);
-        return "Update My Info";
+        return ResponseEntity.ok(personalUserService.updateUserById(personalUserId, request));
     }   
 
     @GetMapping("/me/carrots")
