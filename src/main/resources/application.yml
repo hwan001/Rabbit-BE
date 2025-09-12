@@ -9,7 +9,7 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
+    driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -76,12 +76,20 @@ spring:
             token-uri: https://github.com/login/oauth/access_token
             user-info-uri: https://api.github.com/user
             user-name-attribute: id
+  cloud:
+    config:
+      enabled: false
+
 
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS}
 
 jwt:
   secret: ${JWT_SECRET}
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  base-url: https://api.openai.com/v1
 
 app:
   security:

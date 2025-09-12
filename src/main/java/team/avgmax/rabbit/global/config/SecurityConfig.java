@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .requestMatchers("/login/**", "/error", "/auth/dummy").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/fund-bunnies").hasRole("BUNNY")
-                .requestMatchers("/user/**", "/auth/**", "/fund-bunnies/**").hasRole("USER")
+                .requestMatchers("/user/**", "/auth/**", "/fund-bunnies/**", "/stock/**").hasRole("USER")
                 .anyRequest().hasRole("USER")
             )
             .sessionManagement(session -> session
