@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.dto.request.UpdatePersonalUserRequest;
 import team.avgmax.rabbit.user.entity.enums.Position;
 import team.avgmax.rabbit.user.exception.UserException;
 import team.avgmax.rabbit.user.exception.UserError;
@@ -89,5 +90,43 @@ public class PersonalUser extends User {
             throw new UserException(UserError.CARROT_NOT_ENOUGH);
         }
         this.carrot = this.carrot.subtract(carrot);
+    }
+
+    public void updatePersonalUser(UpdatePersonalUserRequest request) {
+        updateUser(request.name(), request.image());
+        this.birthdate = request.birthdate();
+        this.resume = request.resume();
+        this.portfolio = request.portfolio();
+        this.position = request.position();
+        
+        // SNS 업데이트
+        this.sns.clear();
+        this.sns.addAll(request.link().stream()
+            .map(Sns::create)
+            .toList());
+    
+        // Skill 업데이트
+        this.skill.clear();
+        this.skill.addAll(request.skill().stream()
+            .map(Skill::create)
+            .toList());
+    
+        // Certification 업데이트
+        this.certification.clear();
+        this.certification.addAll(request.certification().stream()
+            .map(Certification::create)
+            .toList());
+        
+        // Career 업데이트
+        this.career.clear();
+        this.career.addAll(request.career().stream()
+            .map(Career::create)
+            .toList());
+    
+        // Education 업데이트
+        this.education.clear();
+        this.education.addAll(request.education().stream()
+            .map(Education::create)
+            .toList());
     }
 }

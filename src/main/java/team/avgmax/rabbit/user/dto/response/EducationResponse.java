@@ -13,6 +13,7 @@ import team.avgmax.rabbit.user.entity.enums.EducationStatus;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record EducationResponse(
+    String educationId,
     String schoolName,
     EducationStatus status,
     String major,
@@ -22,6 +23,7 @@ public record EducationResponse(
 ) {
     public static EducationResponse from(Education education) {
         return EducationResponse.builder()
+                .educationId(education.getId())
                 .schoolName(education.getSchoolName())
                 .status(education.getStatus())
                 .major(education.getMajor())

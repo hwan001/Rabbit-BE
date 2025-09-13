@@ -21,4 +21,10 @@ public class Skill extends BaseTime {
     private String skillName;
 
     private Integer priority;
+
+    public static Skill create(String skillName) {
+        return Skill.builder()
+                .skillName(skillName)
+                .build();
+    }
 }

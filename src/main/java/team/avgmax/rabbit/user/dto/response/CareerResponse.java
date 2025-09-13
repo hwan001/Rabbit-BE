@@ -12,6 +12,7 @@ import team.avgmax.rabbit.user.entity.enums.CareerStatus;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CareerResponse(
+    String careerId,
     String companyName,
     CareerStatus status,
     String position,
@@ -21,6 +22,7 @@ public record CareerResponse(
 ) {
     public static CareerResponse from(Career career) {
         return CareerResponse.builder()
+                .careerId(career.getId())
                 .companyName(career.getCompanyName())
                 .status(career.getStatus())
                 .position(career.getPosition())

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.dto.request.CareerRequest;
 import team.avgmax.rabbit.user.entity.enums.CareerStatus;
 
 import team.avgmax.rabbit.global.entity.BaseTime;
@@ -34,6 +35,17 @@ public class Career extends BaseTime {
     private LocalDate endDate;
 
     private String certificateUrl;
-
+    
     private Integer priority;
+
+    public static Career create(CareerRequest request) {
+        return Career.builder()
+                .companyName(request.companyName())
+                .status(request.status())
+                .position(request.position())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .certificateUrl(request.certificateUrl())
+                .build();
+    }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.dto.request.SnsRequest;
 import team.avgmax.rabbit.user.entity.enums.LinkType;
 
 @Entity
@@ -25,4 +26,15 @@ public class Sns extends BaseTime {
     private LinkType type;
 
     private Integer priority;
+
+    public static Sns create(SnsRequest request) {
+        return Sns.builder()
+                .url(request.url())
+                .type(LinkType.fromUrl(request.url()))
+                .build();
+    }
+    
+    public void updateSns(SnsRequest request) {
+        if (url != null) this.url = request.url();
+    }
 }

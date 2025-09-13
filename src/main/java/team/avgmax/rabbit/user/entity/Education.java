@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import team.avgmax.rabbit.global.entity.BaseTime;
 import team.avgmax.rabbit.global.util.UlidGenerator;
+import team.avgmax.rabbit.user.dto.request.EducationRequest;
 import team.avgmax.rabbit.user.entity.enums.EducationStatus;
 
 import java.time.LocalDate;
@@ -35,4 +36,15 @@ public class Education extends BaseTime {
     private String certificateUrl;
 
     private Integer priority;
+
+    public static Education create(EducationRequest request) {
+        return Education.builder()
+                .schoolName(request.schoolName())
+                .status(request.status())
+                .major(request.major())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .certificateUrl(request.certificateUrl())
+                .build();
+    }
 }

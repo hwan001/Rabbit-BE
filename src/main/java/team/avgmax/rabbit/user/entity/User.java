@@ -29,4 +29,10 @@ public abstract class User extends BaseTime {
     public void updateRoleToBunny() {
         this.role = Role.ROLE_BUNNY;
     }
+
+    // === 업데이트 메서드 ===
+    protected void updateUser(String name, String image) {
+        if (name != null) this.name = name;
+        if (image != null) this.image = image;
+    }
 }
